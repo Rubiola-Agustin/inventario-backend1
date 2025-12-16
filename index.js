@@ -15,21 +15,23 @@ app.use(cors({
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT || 3306),
+  host: process.env.MYSQLHOST || process.env.DB_HOST,
+  user: process.env.MYSQLUSER || process.env.DB_USER,
+  password: process.env.MYSQLPASSWORD || process.env.DB_PASS,
+  database: process.env.MYSQLDATABASE || process.env.DB_NAME,
+  port: Number(process.env.MYSQLPORT || process.env.DB_PORT || 3306),
 });
+
 
 
 db.connect(err => {
   if (err) {
-    console.error('❌ Error de conexión a MySQL:', err.message);
+    console.error('❌ Error de conexión a MySQL:', err); // <- no err.message
   } else {
     console.log('✅ Conectado a MySQL');
   }
 });
+
 
 app.get('/productos', (req, res) => {
   const sql = `
