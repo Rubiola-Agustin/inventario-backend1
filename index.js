@@ -22,15 +22,16 @@ const db = mysql.createPool({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: Number(process.env.DB_PORT || 3306),
-
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0,
 });
 
-db.query('SELECT 1', (err) => {
-  if (err) console.error('❌ Error de conexión a MySQL:', err.message);
-  else console.log('✅ Pool MySQL listo');
+db.query("SELECT 1", (err) => {
+  if (err) console.error("❌ MySQL no responde:", err.message);
+  else console.log("✅ Pool MySQL OK");
 });
 
 
