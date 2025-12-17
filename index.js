@@ -16,24 +16,26 @@ app.use(express.json());
 
 console.log("DB host:", process.env.MYSQLHOST, "port:", process.env.MYSQLPORT);
 
-const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT || 3306),
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-});
+let dbConfig;
+
+if (process.env.MYSQL_URL) {
+  dbConfig = process.env.MYSQL_URL; // Railway internal URL
+} else {
+  dbConfig = {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT || 3306),
+  };
+}
+
+const db = mysql.createPool(dbConfig);
 
 db.query("SELECT 1", (err) => {
   if (err) console.error("❌ MySQL no responde:", err.message);
-  else console.log("✅ Pool MySQL OK");
+  else console.log("✅ MySQL OK");
 });
-
 
 
 app.get('/productos', (req, res) => {
