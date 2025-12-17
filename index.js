@@ -16,24 +16,23 @@ app.use(express.json());
 
 console.log("DB host:", process.env.MYSQLHOST, "port:", process.env.MYSQLPORT);
 
-const db = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: Number(process.env.MYSQLPORT),
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: Number(process.env.DB_PORT || 3306),
+
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
 
-
-
-
-db.connect(err => {
-  if (err) {
-    console.error('❌ Error de conexión a MySQL:', err);
-  } else {
-    console.log('✅ Conectado a MySQL');
-  }
+db.query('SELECT 1', (err) => {
+  if (err) console.error('❌ Error de conexión a MySQL:', err.message);
+  else console.log('✅ Pool MySQL listo');
 });
+
 
 
 app.get('/productos', (req, res) => {
