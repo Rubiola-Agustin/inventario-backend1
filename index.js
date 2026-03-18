@@ -1,3 +1,6 @@
+require('dotenv').config();
+console.log(process.env);
+
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
@@ -14,12 +17,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
-console.log("DB host:", process.env.MYSQLHOST, "port:", process.env.MYSQLPORT);
+console.log("DB host:", process.env.DB_HOST, "port:", process.env.DB_PORT);
 
 let dbConfig;
 
 if (process.env.MYSQL_URL) {
-  dbConfig = process.env.MYSQL_URL; // Railway internal URL
+  dbConfig = process.env.MYSQL_URL; 
 } else {
   dbConfig = {
     host: process.env.DB_HOST,
@@ -33,8 +36,8 @@ if (process.env.MYSQL_URL) {
 const db = mysql.createPool(dbConfig);
 
 db.query("SELECT 1", (err) => {
-  if (err) console.error("❌ MySQL no responde:", err.message);
-  else console.log("✅ MySQL OK");
+  if (err) console.error(" MySQL no responde:", err.message);
+  else console.log(" MySQL OK");
 });
 
 
